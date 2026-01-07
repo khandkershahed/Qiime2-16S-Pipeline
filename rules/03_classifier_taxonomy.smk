@@ -75,7 +75,6 @@ rule train_classifier:
         """)
 
 rule classify_region:
-
     input:
         reps=os.path.join(OUTDIR, "qiime2", "regions", "{region}", "repseqs.qza"),
         classifier=os.path.join(OUTDIR, "classifiers", "{region}", "classifier.qza")
