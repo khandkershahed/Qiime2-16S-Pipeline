@@ -18,6 +18,8 @@ jobs:
           miniforge-version: latest
           auto-activate-base: false
           use-mamba: true
+          conda-remove-defaults: true
+          channels: conda-forge
 
       - name: Create Snakemake environment
         shell: bash -l {0}
