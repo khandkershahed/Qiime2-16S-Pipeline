@@ -11,16 +11,36 @@ Import → (optional) FastQC/MultiQC → Cutadapt per-region → DADA2 per-regio
 
 ## 1) Download the repo
 ```bash
-git clone <YOUR_GITHUB_REPO_URL>.git
-cd <YOUR_GITHUB_REPO_NAME>
+git clone https://github.com/khandkershahed/Qiime2-16S-Pipeline.git
+cd Qiime2-16S-Pipeline
 ```
 
 ## 2) Create a fresh Snakemake runner environment (recommended)
 This keeps Snakemake stable and lets it create all tool environments automatically.
-```bash
-mamba env create -f envs/snakemake.yml
-mamba activate snakemake
-```
+
+  ### Installing Snakemake (conda / mamba / pip)
+
+    #### A) mamba (recommended)
+    ```bash
+    mamba env create -f envs/snakemake.yml
+    mamba activate snakemake
+    ```
+
+    #### B) conda
+    ```bash
+    conda env create -f envs/snakemake.yml
+    conda activate snakemake
+    ```
+
+    #### C) pip (installs Snakemake only; pipeline still needs conda/mamba for QIIME2 envs)
+    ```bash
+    python -m venv .venv
+    source .venv/bin/activate
+    pip install --upgrade pip
+    pip install snakemake
+    ```
+
+> Note: QIIME2 is installed by Snakemake using `--use-conda` from `envs/qiime2.yml`.
 
 ## 3) Prepare your input files
 Put your files in the `data/` folder (or point to them in `config.yaml`).
@@ -151,29 +171,7 @@ SEPP can require significant RAM/CPU. Reduce threads if needed:
 - Paper-style Methods in `docs/METHODS.md`
 - Publishing guide in `docs/PUBLISHING.md`
 
-## Installing Snakemake (conda / mamba / pip)
 
-### A) mamba (recommended)
-```bash
-mamba env create -f envs/snakemake.yml
-mamba activate snakemake
-```
-
-### B) conda
-```bash
-conda env create -f envs/snakemake.yml
-conda activate snakemake
-```
-
-### C) pip (installs Snakemake only; pipeline still needs conda/mamba for QIIME2 envs)
-```bash
-python -m venv .venv
-source .venv/bin/activate
-pip install --upgrade pip
-pip install snakemake
-```
-
-> Note: QIIME2 is installed by Snakemake using `--use-conda` from `envs/qiime2.yml`.
 
 ## Methods for papers
 Read: `docs/METHODS.md`
