@@ -8,7 +8,7 @@ rule alpha_rarefaction:
     params:
         max_depth=lambda wc: int(config.get("alpha_max_depth", 50000))
     conda:
-        "envs/qiime2.yml"
+        "../envs/qiime2.yml"
     shell:
         """
         mkdir -p "{OUTDIR}/qiime2/diversity"
@@ -33,7 +33,7 @@ rule core_metrics:
     params:
         depth=lambda wc: int(config.get("sampling_depth", 550))
     conda:
-        "envs/qiime2.yml"
+        "../envs/qiime2.yml"
     shell:
         """
         mkdir -p "{OUTDIR}/qiime2/diversity/core-metrics"
