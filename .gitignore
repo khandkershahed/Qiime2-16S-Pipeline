@@ -1,0 +1,5 @@
+.snakemake/
+results/
+__pycache__/
+*.log
+*.conda-lock.yml

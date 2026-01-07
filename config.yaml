@@ -1,0 +1,251 @@
+##########################################################
+#                 USER CONFIGURATION FILE                #
+#     Strict Research Edition (Matches PPTX Protocols)   #
+##########################################################
+
+manifest: "data/manifest.tsv"
+metadata: "data/metadata.tsv"
+
+outdir: "results"
+cores: 12
+
+##########################################################
+# QC & Trimming
+##########################################################
+run_qc: true
+qc_threads: 3
+discard_untrimmed: true
+adapter_f: ""
+adapter_r: ""
+
+##########################################################
+# Region Selection
+##########################################################
+# Put one or more region keys (space-separated) from regions_full.
+# Example:
+# regions: "v34_341f_806r v4_515f_806r v45_515f_926r"
+regions: "v34_341f_806r v4_515f_806r v45_515f_926r"
+
+# Global primer override (optional) — if both set, overrides region primers
+# f_primer: ""
+# r_primer: ""
+
+##########################################################
+# Classifier control (Research-safe)
+##########################################################
+run_classifier_training: true
+classifier_pretrained_dir: ""
+
+
+##########################################################
+# Classifier settings (extract-reads)
+##########################################################
+classifier_defaults:
+  min_length: 200
+  max_length: 500
+
+merged_tax_perc_identity: 0.97
+
+##########################################################
+# Reference Database (Silva or Greengenes)
+##########################################################
+ref_database: "silva" 
+
+silva_seqs_url: "https://data.qiime2.org/2024.10/common/silva-138-99-seqs.qza"
+silva_tax_url:  "https://data.qiime2.org/2024.10/common/silva-138-99-tax.qza"
+
+gg_seqs_url: "https://data.qiime2.org/2024.10/common/gg-13-8-99-seqs.qza"
+gg_tax_url:  "https://data.qiime2.org/2024.10/common/gg-13-8-99-tax.qza"
+
+##########################################################
+# Diversity & SEPP
+##########################################################
+run_sepp: true
+sepp_threads: 8
+sepp_alignment_subset_size: 1000
+sepp_placement_subset_size: 5000
+
+# SEPP Reference DB (choose one)
+sepp_refs_db: "silva-128"   # options: "silva-128", "gg-13-8"
+sepp_refs_silva_128_url: "https://data.qiime2.org/classifiers/sepp-ref-dbs/sepp-refs-silva-128.qza"
+sepp_refs_gg_13_8_url:   "https://data.qiime2.org/classifiers/sepp-ref-dbs/sepp-refs-gg-13-8.qza"
+
+alpha_max_depth: 50000
+sampling_depth: 550
+
+##########################################################
+# Advanced Stats: Gemelli, Qurro, PERMANOVA
+##########################################################
+run_gemelli: true
+run_qurro: true
+gemelli_min_feature_frequency: 1
+
+permanova_formula: "Country"
+permutations: 999
+beta_group_column: "Country"
+
+##########################################################
+# Region DEFINITIONS (Research Quality)
+##########################################################
+regions_full:
+  v34_341f_806r:
+    fwd: "CCTAYGGGRBGCASCAG"
+    rev: "GGACTACNNGGGTATCTAAT"
+    trunc_f: 240
+    trunc_r: 200
+    min_len: 300
+    max_len: 470
+    note: "Klindworth 341F/806R (V3–V4)"
+
+  v4_515f_806r:
+    fwd: "GTGYCAGCMGCCGCGGTAA"
+    rev: "GGACTACNVGGGTWTCTAAT"
+    trunc_f: 220
+    trunc_r: 200
+    min_len: 220
+    max_len: 270
+    note: "Caporaso/EMP 515F/806R (V4)"
+
+  v45_515f_926r:
+    fwd: "GTGYCAGCMGCCGCGGTAA"
+    rev: "CCGYCAATTYMTTTRAGTTT"
+    trunc_f: 220
+    trunc_r: 200
+    min_len: 350
+    max_len: 430
+    note: "Parada/Quince 515F/926R (V4–V5)"
+
+  v5_standard:
+    fwd: "AACMGGATTAGATACCCKG"
+    rev: "CCGYCAATTYMTTTRAGTTT"
+    trunc_f: 220
+    trunc_r: 200
+    min_len: 350
+    max_len: 430
+    note: "V5-focused (commonly paired with 926R)"
+
+  v1_27f_338r:
+    fwd: "AGAGTTTGATCMTGGCTCAG"
+    rev: "TGCTGCCTCCCGTAGGAGT"
+    trunc_f: 0
+    trunc_r: 0
+    min_len: 250
+    max_len: 400
+    note: "27F/338R (V1–V2)"
+
+  v12_27f_338r:
+    fwd: "AGAGTTTGATCMTGGCTCAG"
+    rev: "TGCTGCCTCCCGTAGGAGT"
+    trunc_f: 0
+    trunc_r: 0
+    min_len: 250
+    max_len: 400
+    note: "Alias of 27F/338R"
+
+  v23_341f_534r:
+    fwd: "CCTACGGGNGGCWGCAG"
+    rev: "ATTACCGCGGCTGCTGG"
+    trunc_f: 0
+    trunc_r: 0
+    min_len: 150
+    max_len: 260
+    note: "341F/534R (V3)"
+
+  v3_341f_785r:
+    fwd: "CCTACGGGNGGCWGCAG"
+    rev: "GACTACHVGGGTATCTAATCC"
+    trunc_f: 240
+    trunc_r: 200
+    min_len: 400
+    max_len: 520
+    note: "Illumina/FAQ style 341F/785R (V3–V4)"
+
+  v34_341f_785r:
+    fwd: "CCTACGGGNGGCWGCAG"
+    rev: "GACTACHVGGGTATCTAATCC"
+    trunc_f: 240
+    trunc_r: 200
+    min_len: 400
+    max_len: 520
+    note: "341F/785R (V3–V4)"
+
+  v4_515f_806r_apprill:
+    fwd: "GTGYCAGCMGCCGCGGTAA"
+    rev: "GGACTACNVGGGTWTCTAAT"
+    trunc_f: 220
+    trunc_r: 200
+    min_len: 220
+    max_len: 270
+    note: "515F/806R (V4, common variants)"
+
+  v4_515f_806r_original:
+    fwd: "GTGCCAGCMGCCGCGGTAA"
+    rev: "GGACTACHVGGGTWTCTAAT"
+    trunc_f: 220
+    trunc_r: 200
+    min_len: 220
+    max_len: 270
+    note: "Original/legacy 515F/806R style"
+
+  v4_533f_806r:
+    fwd: "GTGCCAGCMGCCGCGGTAA"
+    rev: "GGACTACNVGGGTWTCTAAT"
+    trunc_f: 220
+    trunc_r: 200
+    min_len: 220
+    max_len: 300
+    note: "533F/806R (V4)"
+
+  v56_785f_926r:
+    fwd: "GGATTAGATACCCBRGTAGTC"
+    rev: "CCGTCAATTCMTTTRAGTTT"
+    trunc_f: 0
+    trunc_r: 0
+    min_len: 250
+    max_len: 420
+    note: "785F/926R (V5–V6)"
+
+  v67_799f_1193r:
+    fwd: "AACMGGATTAGATACCCKG"
+    rev: "ACGTCATCCCCACCTTCC"
+    trunc_f: 0
+    trunc_r: 0
+    min_len: 300
+    max_len: 520
+    note: "Approx V5–V7 style"
+
+  v6v7_926f_1392r:
+    fwd: "AAACTYAAAKGAATTGACGG"
+    rev: "ACGGGCGGTGTGTRC"
+    trunc_f: 0
+    trunc_r: 0
+    min_len: 350
+    max_len: 600
+    note: "V6–V8 style 926F/1392R"
+
+  v89_1114f_1392r:
+    fwd: "YAAACGAGCGCAACCC"
+    rev: "ACGGGCGGTGTGTRC"
+    trunc_f: 0
+    trunc_r: 0
+    min_len: 200
+    max_len: 450
+    note: "V8–V9 style"
+
+  v9_1389f_1492r:
+    fwd: "TTGTACACACCGCCCGTC"
+    rev: "GGTTACCTTGTTACGACTT"
+    trunc_f: 0
+    trunc_r: 0
+    min_len: 120
+    max_len: 250
+    note: "V9 tail region"
+
+  full_27f_1492r:
+    fwd: "AGAGTTTGATCMTGGCTCAG"
+    rev: "GGTTACCTTGTTACGACTT"
+    trunc_f: 0
+    trunc_r: 0
+    min_len: 1200
+    max_len: 1700
+    note: "Full-length 16S (27F/1492R)"

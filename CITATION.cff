@@ -1,0 +1,9 @@
+cff-version: 1.2.0
+message: "If you use this pipeline in your research, please cite it."
+title: "QIIME2 16S Multi-Region Snakemake Pipeline"
+version: 1.0.0
+license: MIT
+authors:
+  - family-names: "YourName"
+    given-names: "YourGivenName"
+date-released: "2026-01-06"
