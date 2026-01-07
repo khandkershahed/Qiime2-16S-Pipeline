@@ -1,6 +1,6 @@
 # 16S Multi-Region Snakemake Pipeline (QIIME2 2024.10) — Research-Safe v1.0.0
 
-This repository runs a **complete, research-oriented** multi-region 16S analysis pipeline in **Snakemake**, following the step order in your PPTX:
+This repository runs a **complete, research-oriented** multi-region 16S analysis pipeline in **Snakemake**, following the step order:
 Import → (optional) FastQC/MultiQC → Cutadapt per-region → DADA2 per-region → Train region-specific classifiers → Taxonomy per-region → Merge → VSEARCH consensus taxonomy → SEPP phylogeny → Filtering → Alpha rarefaction → Core metrics → Gemelli RPCA (+ QC) → PERMANOVA/Significance → Qurro → Exports for R.
 
 ## 0) Requirements
