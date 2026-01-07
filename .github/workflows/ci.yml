@@ -1,19 +1,29 @@
 name: CI
-on: [push, pull_request]
+
+on:
+  push:
+  pull_request:
+
 jobs:
   lint-and-dryrun:
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v4
-      - uses: mamba-org/setup-micromamba@v2
+
+      - name: Setup micromamba
+        uses: mamba-org/setup-micromamba@v2
         with:
           environment-file: envs/snakemake.yml
           cache-environment: true
+          cache-downloads: true
+
       - name: Snakemake lint
-        shell: bash -l {0}
+        shell: bash
         run: |
-          snakemake --lint
+          micromamba run -n snakemake snakemake --lint
+
       - name: Snakemake dry-run
-        shell: bash -l {0}
+        shell: bash
         run: |
-          snakemake -n --use-conda --cores 1
+          micromamba run -n snakemake snakemake -n --use-conda --cores 1
