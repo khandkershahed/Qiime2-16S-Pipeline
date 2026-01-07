@@ -13,7 +13,6 @@ rule validate_manifest:
 rule validate_metadata:
     input:
         fixed=rules.validate_manifest.output.fixed,
-        # meta_ok=rules.validate_metadata.output,
         meta=metadata_path()
     output:
         touch(os.path.join(OUTDIR, "intermediate", "metadata.validated"))
@@ -27,7 +26,7 @@ rule validate_metadata:
 
 rule qiime_import:
     input:
-        fixed=rules.validate_manifest.output.fixed
+        fixed=rules.validate_manifest.output.fixed,
         meta_ok=rules.validate_metadata.output
     output:
         os.path.join(OUTDIR, "qiime2", "paired-end-demux.qza")
@@ -66,14 +65,16 @@ rule fastqc_multiqc:
         "envs/qc.yml"
     run:
         if not bool(config.get("run_qc", True)):
-            shell(f"mkdir -p {OUTDIR}/qc/multiqc && echo 'QC disabled' > {output}")
+            shell(f'mkdir -p {OUTDIR}/qc/multiqc && echo "QC disabled" > "{output}"')
             return
+
         qc_threads = int(config.get("qc_threads", 3))
+
         shell(f"""
-        mkdir -p {OUTDIR}/qc/fastqc {OUTDIR}/qc/multiqc
-        awk 'NR>1 && $1!~/^#/{{print $2"\n"$3}}' "{input.fixed}" | while read f; do
+        mkdir -p "{OUTDIR}/qc/fastqc" "{OUTDIR}/qc/multiqc"
+        awk 'NR>1 && $1!~/^#/{{print $2"\\n"$3}}' "{input.fixed}" | while read f; do
           [ -z "$f" ] && continue
-          fastqc -t {qc_threads} -o {OUTDIR}/qc/fastqc "$f"
+          fastqc -t {qc_threads} -o "{OUTDIR}/qc/fastqc" "$f"
         done
-        multiqc {OUTDIR}/qc/fastqc -o {OUTDIR}/qc/multiqc
+        multiqc "{OUTDIR}/qc/fastqc" -o "{OUTDIR}/qc/multiqc"
         """)
