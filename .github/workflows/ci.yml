@@ -11,19 +11,25 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup micromamba
-        uses: mamba-org/setup-micromamba@v2
+      - name: Setup Miniforge (conda + mamba)
+        uses: conda-incubator/setup-miniconda@v3
         with:
-          environment-file: envs/snakemake.yml
-          cache-environment: true
-          cache-downloads: true
+          miniforge-variant: Miniforge3
+          miniforge-version: latest
+          auto-activate-base: false
+          use-mamba: true
+
+      - name: Create Snakemake environment
+        shell: bash -l {0}
+        run: |
+          mamba env create -f envs/snakemake.yml
 
       - name: Snakemake lint
-        shell: bash
+        shell: bash -l {0}
         run: |
-          micromamba run -n snakemake snakemake --lint
+          mamba run -n snakemake snakemake --lint
 
       - name: Snakemake dry-run
-        shell: bash
+        shell: bash -l {0}
         run: |
-          micromamba run -n snakemake snakemake -n --use-conda --cores 1
+          mamba run -n snakemake snakemake -n --use-conda --cores 1
