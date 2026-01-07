@@ -4,14 +4,19 @@ rule merge_tables:
     output:
         os.path.join(OUTDIR, "qiime2", "merged", "merged_table.qza")
     conda:
-        "../envs/qiime2.yml"
-    shell:
-        """
-        mkdir -p {OUTDIR}/qiime2/merged
+        "../envs/qiime2.yml"  # Remember to use ../ to find the env file from the rules dir
+    run:
+        import os
+        os.makedirs(os.path.join(OUTDIR, "qiime2", "merged"), exist_ok=True)
+        
+        # Create the string of arguments in Python
+        tables_args = " ".join(f'--i-tables "{t}"' for t in input.tables)
+        
+        shell(f"""
         qiime feature-table merge \
-          {" ".join(["--i-tables \"" + t + "\"" for t in input.tables])} \
+          {tables_args} \
           --o-merged-table "{output}"
-        """
+        """)
 
 rule merge_repseqs:
     input:
@@ -19,14 +24,19 @@ rule merge_repseqs:
     output:
         os.path.join(OUTDIR, "qiime2", "merged", "merged_repseqs.qza")
     conda:
-        "../envs/qiime2.yml"
-    shell:
-        """
-        mkdir -p {OUTDIR}/qiime2/merged
+        "../envs/qiime2.yml" # Remember to use ../ here too
+    run:
+        import os
+        os.makedirs(os.path.join(OUTDIR, "qiime2", "merged"), exist_ok=True)
+
+        # Create the string of arguments in Python
+        reps_args = " ".join(f'--i-data "{r}"' for r in input.reps)
+
+        shell(f"""
         qiime feature-table merge-seqs \
-          {" ".join(["--i-data \"" + r + "\"" for r in input.reps])} \
+          {reps_args} \
           --o-merged-data "{output}"
-        """
+        """)
 
 rule taxonomy_merged_vsearch:
     input:
