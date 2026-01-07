@@ -5,7 +5,7 @@ rule gemelli_rpca_unrarefied:
         biplot=os.path.join(OUTDIR, "qiime2", "gemelli", "ordination_unrarefied.qza"),
         dist=os.path.join(OUTDIR, "qiime2", "gemelli", "distance_unrarefied.qza")
     conda:
-        "envs/qiime2.yml"
+        "../envs/qiime2.yml"
     run:
         if not bool(config.get("run_gemelli", True)):
             shell(f"mkdir -p {OUTDIR}/qiime2/gemelli && touch {output.biplot} {output.dist}")
@@ -25,7 +25,7 @@ rule rarefy_table:
     output:
         os.path.join(OUTDIR, "qiime2", "gemelli", "rarefied_table.qza")
     conda:
-        "envs/qiime2.yml"
+        "../envs/qiime2.yml"
     run:
         if not bool(config.get("run_gemelli", True)):
             shell(f"mkdir -p {OUTDIR}/qiime2/gemelli && touch {output}")
@@ -45,7 +45,7 @@ rule gemelli_rpca_rarefied:
         biplot=os.path.join(OUTDIR, "qiime2", "gemelli", "ordination_rarefied.qza"),
         dist=os.path.join(OUTDIR, "qiime2", "gemelli", "distance_rarefied.qza")
     conda:
-        "envs/qiime2.yml"
+        "../envs/qiime2.yml"
     run:
         if not bool(config.get("run_gemelli", True)):
             shell(f"touch {output.biplot} {output.dist}")
@@ -66,7 +66,7 @@ rule gemelli_qc_rarefy:
     output:
         os.path.join(OUTDIR, "qiime2", "gemelli", "rarefy_qc.qzv")
     conda:
-        "envs/qiime2.yml"
+        "../envs/qiime2.yml"
     run:
         if not bool(config.get("run_gemelli", True)):
             shell(f"touch {output}")
@@ -86,7 +86,7 @@ rule rpca_biplot:
     output:
         os.path.join(OUTDIR, "qiime2", "gemelli", "rpca_biplot.qzv")
     conda:
-        "envs/qiime2.yml"
+        "../envs/qiime2.yml"
     run:
         if not bool(config.get("run_gemelli", True)):
             shell(f"touch {output}")
@@ -105,7 +105,7 @@ rule permanova_adonis:
     output:
         os.path.join(OUTDIR, "qiime2", "stats", "rpca_permanova.qzv")
     conda:
-        "envs/qiime2.yml"
+        "../envs/qiime2.yml"
     run:
         if not bool(config.get("run_gemelli", True)):
             shell(f"mkdir -p {OUTDIR}/qiime2/stats && touch {output}")
@@ -127,7 +127,7 @@ rule beta_group_significance:
     output:
         os.path.join(OUTDIR, "qiime2", "stats", "beta_group_significance.qzv")
     conda:
-        "envs/qiime2.yml"
+        "../envs/qiime2.yml"
     run:
         if not bool(config.get("run_gemelli", True)):
             shell(f"mkdir -p {OUTDIR}/qiime2/stats && touch {output}")
@@ -152,7 +152,7 @@ rule qurro_plot:
     output:
         os.path.join(OUTDIR, "qiime2", "qurro", "qurro_plot.qzv")
     conda:
-        "envs/qiime2.yml"
+        "../envs/qiime2.yml"
     run:
         if not bool(config.get("run_qurro", True)):
             shell(f"mkdir -p {OUTDIR}/qiime2/qurro && touch {output}")

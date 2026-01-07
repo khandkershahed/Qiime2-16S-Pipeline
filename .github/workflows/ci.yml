@@ -18,21 +18,24 @@ jobs:
           miniforge-version: latest
           auto-activate-base: false
           use-mamba: true
+          conda-remove-defaults: "true"
+
+      - name: Configure conda (research-safe)
+        shell: bash -l {0}
+        run: |
+          conda config --set channel_priority strict
 
       - name: Create Snakemake environment
         shell: bash -l {0}
         run: |
           mamba env create -f envs/snakemake.yml
 
-      # LINT = advisory (do not fail CI)
-      - name: Snakemake lint (advisory)
-        continue-on-error: true
+      - name: Snakemake lint (do not fail CI on style warnings)
         shell: bash -l {0}
         run: |
-          mamba run -n snakemake snakemake --lint
+          mamba run -n snakemake snakemake --lint || true
 
-      # DRY-RUN = must pass
-      - name: Snakemake dry-run (must pass)
+      - name: Snakemake dry-run
         shell: bash -l {0}
         run: |
           mamba run -n snakemake snakemake -n --use-conda --cores 1

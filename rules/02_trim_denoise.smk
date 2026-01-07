@@ -4,7 +4,7 @@ rule cutadapt_trim_paired:
     output:
         os.path.join(OUTDIR, "qiime2", "regions", "{region}", "demux_trim.qza")
     conda:
-        "envs/qiime2.yml"
+        "../envs/qiime2.yml"
     params:
         cores=lambda wc: int(config.get("cores", 8)),
         discard=lambda wc: "--p-discard-untrimmed" if bool(config.get("discard_untrimmed", True)) else ""
@@ -36,7 +36,7 @@ rule dada2_denoise_paired:
         repseqs=os.path.join(OUTDIR, "qiime2", "regions", "{region}", "repseqs.qza"),
         stats=os.path.join(OUTDIR, "qiime2", "regions", "{region}", "stats.qza")
     conda:
-        "envs/qiime2.yml"
+        "../envs/qiime2.yml"
     run:
         r = get_region(wildcards.region)
         shell(f"""

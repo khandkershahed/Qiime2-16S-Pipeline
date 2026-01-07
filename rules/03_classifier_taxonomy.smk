@@ -9,7 +9,7 @@ rule download_references:
         g_seq=lambda wc: config.get("gg_seqs_url"),
         g_tax=lambda wc: config.get("gg_tax_url")
     conda:
-        "envs/qiime2.yml"
+        "../envs/qiime2.yml"
     shell:
         """
         mkdir -p {OUTDIR}/refs
@@ -28,7 +28,7 @@ rule extract_reads:
     output:
         os.path.join(OUTDIR, "classifiers", "{region}", "ref_seqs_extracted.qza")
     conda:
-        "envs/qiime2.yml"
+        "../envs/qiime2.yml"
     run:
         r = get_region(wildcards.region)
         min_l = int(r.get("min_len", config["classifier_defaults"]["min_length"]))
@@ -51,7 +51,7 @@ rule train_classifier:
     output:
         os.path.join(OUTDIR, "classifiers", "{region}", "classifier.qza")
     conda:
-        "envs/qiime2.yml"
+        "../envs/qiime2.yml"
     run:
         train_ok = bool(config.get("run_classifier_training", True))
         pretrained_dir = (config.get("classifier_pretrained_dir", "") or "").strip()
@@ -81,7 +81,7 @@ rule classify_region:
     output:
         os.path.join(OUTDIR, "qiime2", "regions", "{region}", "taxonomy.qza")
     conda:
-        "envs/qiime2.yml"
+        "../envs/qiime2.yml"
     shell:
         """
         qiime feature-classifier classify-sklearn \
@@ -98,7 +98,7 @@ rule taxa_barplot_region:
     output:
         os.path.join(OUTDIR, "qiime2", "regions", "{region}", "taxa-barplot.qzv")
     conda:
-        "envs/qiime2.yml"
+        "../envs/qiime2.yml"
     shell:
         """
         qiime taxa barplot \

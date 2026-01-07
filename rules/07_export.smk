@@ -4,7 +4,7 @@ rule export_repseqs_fasta:
     output:
         os.path.join(OUTDIR, "export", "dna-sequences.fasta")
     conda:
-        "envs/qiime2.yml"
+        "../envs/qiime2.yml"
     shell:
         """
         mkdir -p {OUTDIR}/export/_temp_fasta
@@ -25,7 +25,7 @@ rule export_all:
         tax_tsv=os.path.join(OUTDIR, "export", "taxonomy.tsv"),
         tree_nwk=os.path.join(OUTDIR, "export", "tree.nwk")
     conda:
-        "envs/qiime2.yml"
+        "../envs/qiime2.yml"
     shell:
         """
         mkdir -p {OUTDIR}/export

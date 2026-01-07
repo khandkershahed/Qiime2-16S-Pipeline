@@ -4,7 +4,7 @@ rule merge_tables:
     output:
         os.path.join(OUTDIR, "qiime2", "merged", "merged_table.qza")
     conda:
-        "envs/qiime2.yml"
+        "../envs/qiime2.yml"
     shell:
         """
         mkdir -p {OUTDIR}/qiime2/merged
@@ -19,7 +19,7 @@ rule merge_repseqs:
     output:
         os.path.join(OUTDIR, "qiime2", "merged", "merged_repseqs.qza")
     conda:
-        "envs/qiime2.yml"
+        "../envs/qiime2.yml"
     shell:
         """
         mkdir -p {OUTDIR}/qiime2/merged
@@ -36,7 +36,7 @@ rule taxonomy_merged_vsearch:
     output:
         os.path.join(OUTDIR, "qiime2", "merged", "taxonomy_merged_vsearch.qza")
     conda:
-        "envs/qiime2.yml"
+        "../envs/qiime2.yml"
     params:
         perc_id=lambda wc: float(config.get("merged_tax_perc_identity", 0.97))
     shell:
@@ -58,7 +58,7 @@ rule merged_summaries:
         table_qzv=os.path.join(OUTDIR, "qiime2", "merged", "table_merged.qzv"),
         reps_qzv=os.path.join(OUTDIR, "qiime2", "merged", "repseqs_merged.qzv")
     conda:
-        "envs/qiime2.yml"
+        "../envs/qiime2.yml"
     shell:
         """
         qiime feature-table summarize \
@@ -74,7 +74,7 @@ rule download_sepp_refs:
     output:
         os.path.join(OUTDIR, "refs", "sepp_refs.qza")
     conda:
-        "envs/qiime2.yml"
+        "../envs/qiime2.yml"
     params:
         db=lambda wc: str(config.get("sepp_refs_db", "silva-128")).lower(),
         silva=lambda wc: config.get("sepp_refs_silva_128_url"),
@@ -97,7 +97,7 @@ rule sepp_tree:
         tree=os.path.join(OUTDIR, "qiime2", "merged", "sepp_tree.qza"),
         placements=os.path.join(OUTDIR, "qiime2", "merged", "sepp_placements.qza")
     conda:
-        "envs/qiime2.yml"
+        "../envs/qiime2.yml"
     run:
         if not bool(config.get("run_sepp", True)):
             shell(f"mkdir -p {OUTDIR}/qiime2/merged && touch {output.tree} {output.placements}")
@@ -122,7 +122,7 @@ rule filter_table_by_sepp:
     output:
         os.path.join(OUTDIR, "qiime2", "merged", "filtered_table_merged.qza")
     conda:
-        "envs/qiime2.yml"
+        "../envs/qiime2.yml"
     run:
         if not bool(config.get("run_sepp", True)):
             shell(f"cp {input.table} {output}")
@@ -143,7 +143,7 @@ rule merged_taxa_barplot:
     output:
         os.path.join(OUTDIR, "qiime2", "merged", "filtered_taxa_merged.qzv")
     conda:
-        "envs/qiime2.yml"
+        "../envs/qiime2.yml"
     shell:
         """
         qiime taxa barplot \

@@ -4,7 +4,7 @@ rule validate_manifest:
     output:
         fixed=os.path.join(OUTDIR, "intermediate", "manifest_fixed.tsv")
     conda:
-        "envs/qiime2.yml"
+        "../envs/qiime2.yml"
     shell:
         """
         python scripts/validate_manifest.py "{input.manifest}" "{output.fixed}"
@@ -17,7 +17,7 @@ rule validate_metadata:
     output:
         touch(os.path.join(OUTDIR, "intermediate", "metadata.validated"))
     conda:
-        "envs/qiime2.yml"
+        "../envs/qiime2.yml"
     shell:
         """
         python scripts/validate_metadata.py "{input.fixed}" "{input.meta}"
@@ -31,7 +31,7 @@ rule qiime_import:
     output:
         os.path.join(OUTDIR, "qiime2", "paired-end-demux.qza")
     conda:
-        "envs/qiime2.yml"
+        "../envs/qiime2.yml"
     shell:
         """
         mkdir -p {OUTDIR}/qiime2
@@ -48,7 +48,7 @@ rule demux_summarize:
     output:
         os.path.join(OUTDIR, "qiime2", "paired-end-demux.qzv")
     conda:
-        "envs/qiime2.yml"
+        "../envs/qiime2.yml"
     shell:
         """
         qiime demux summarize \
@@ -62,7 +62,7 @@ rule fastqc_multiqc:
     output:
         os.path.join(OUTDIR, "qc", "multiqc", "multiqc_report.html")
     conda:
-        "envs/qc.yml"
+        "../envs/qc.yml"
     run:
         if not bool(config.get("run_qc", True)):
             shell(f'mkdir -p {OUTDIR}/qc/multiqc && echo "QC disabled" > "{output}"')

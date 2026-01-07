@@ -6,7 +6,7 @@ rule alpha_rarefaction:
     output:
         os.path.join(OUTDIR, "qiime2", "diversity", "alpha_rarefaction.qzv")
     conda:
-        "envs/qiime2.yml"
+        "../envs/qiime2.yml"
     shell:
         """
         mkdir -p {OUTDIR}/qiime2/diversity
@@ -26,7 +26,7 @@ rule core_metrics:
     output:
         dist_bray=os.path.join(OUTDIR, "qiime2", "diversity", "core-metrics", "bray_curtis_distance_matrix.qza")
     conda:
-        "envs/qiime2.yml"
+        "../envs/qiime2.yml"
     shell:
         """
         mkdir -p {OUTDIR}/qiime2/diversity/core-metrics
