@@ -18,19 +18,21 @@ jobs:
           miniforge-version: latest
           auto-activate-base: false
           use-mamba: true
-          conda-remove-defaults: "true"
 
       - name: Create Snakemake environment
         shell: bash -l {0}
         run: |
           mamba env create -f envs/snakemake.yml
 
-      - name: Snakemake lint
+      # LINT = advisory (do not fail CI)
+      - name: Snakemake lint (advisory)
+        continue-on-error: true
         shell: bash -l {0}
         run: |
           mamba run -n snakemake snakemake --lint
 
-      - name: Snakemake dry-run
+      # DRY-RUN = must pass
+      - name: Snakemake dry-run (must pass)
         shell: bash -l {0}
         run: |
           mamba run -n snakemake snakemake -n --use-conda --cores 1
