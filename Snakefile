@@ -47,24 +47,26 @@ def manifest_path():
 def metadata_path():
     return str(config["metadata"])
 
-def read_manifest_fastqs(manifest_tsv):
-    """Reads manifest, returns list of SampleIDs (best-effort)."""
+def read_manifest_sample_ids(manifest_tsv):
     if not os.path.exists(manifest_tsv):
         return []
     ids = []
-    with open(manifest_tsv, "r") as f:
+    with open(manifest_tsv, "r", newline="") as f:
         reader = csv.reader(f, delimiter="\t")
         header = next(reader, None)
         if not header:
             return []
         for row in reader:
-            if row and not row[0].startswith("#"):
-                ids.append(row[0].strip())
+            if not row:
+                continue
+            if row[0].startswith("#"):
+                continue
+            ids.append(row[0].strip())
     return ids
 
 
 # ----------------------------
-# Include modular rules (keep file count small)
+# Include rule modules (exactly your repo filenames)
 # ----------------------------
 include: "rules/00_utils.smk"
 include: "rules/01_import_qc.smk"
@@ -77,90 +79,48 @@ include: "rules/07_export.smk"
 
 
 # ----------------------------
-# Final targets (research-safe)
-# Use explicit final filenames here to avoid Namedlist attribute mismatches.
+# Rule all (research-safe)
+# IMPORTANT: do not hardcode gemelli/permanova filenames.
+# We use the actual outputs from the rules to avoid mismatches.
 # ----------------------------
-QC_TARGETS = (
-    [os.path.join(OUTDIR, "qc", "multiqc", "multiqc_report.html")]
-    if bool(config.get("run_qc", True))
-    else []
-)
-
-PER_REGION_TARGETS = []
-for r in REGIONS:
-    PER_REGION_TARGETS += [
-        os.path.join(OUTDIR, "qiime2", "regions", r, "demux_trim.qza"),
-        os.path.join(OUTDIR, "qiime2", "regions", r, "table.qza"),
-        os.path.join(OUTDIR, "qiime2", "regions", r, "repseqs.qza"),
-        os.path.join(OUTDIR, "qiime2", "regions", r, "taxonomy.qza"),
-        os.path.join(OUTDIR, "qiime2", "regions", r, "taxa-barplot.qzv"),
-    ]
-
-MERGED_TARGETS = [
-    os.path.join(OUTDIR, "qiime2", "merged", "merged_table.qza"),
-    os.path.join(OUTDIR, "qiime2", "merged", "merged_repseqs.qza"),
-    os.path.join(OUTDIR, "qiime2", "merged", "taxonomy_merged_vsearch.qza"),
-    os.path.join(OUTDIR, "qiime2", "merged", "table_merged.qzv"),
-    os.path.join(OUTDIR, "qiime2", "merged", "repseqs_merged.qzv"),
-]
-
-PHYLOGENY_TARGETS = []
-if bool(config.get("run_sepp", True)):
-    PHYLOGENY_TARGETS = [
-        os.path.join(OUTDIR, "qiime2", "merged", "sepp_tree.qza"),
-        os.path.join(OUTDIR, "qiime2", "merged", "sepp_placements.qza"),
-        os.path.join(OUTDIR, "qiime2", "merged", "filtered_table_merged.qza"),
-    ]
-
-DIVERSITY_TARGETS = [
-    os.path.join(OUTDIR, "qiime2", "diversity", "alpha-rarefaction.qzv"),
-    os.path.join(OUTDIR, "qiime2", "diversity", "core-metrics", "bray_curtis_distance_matrix.qza"),
-]
-
-GEMELLI_TARGETS = (
-    [
-        os.path.join(OUTDIR, "qiime2", "gemelli", "rpca_unrarefied_biplot.qza"),
-        os.path.join(OUTDIR, "qiime2", "gemelli", "rpca_unrarefied_distance.qza"),
-        os.path.join(OUTDIR, "qiime2", "gemelli", "rarefied_table.qza"),
-        os.path.join(OUTDIR, "qiime2", "gemelli", "rpca_rarefied_biplot.qza"),
-        os.path.join(OUTDIR, "qiime2", "gemelli", "rpca_rarefied_distance.qza"),
-        os.path.join(OUTDIR, "qiime2", "gemelli", "qc_rarefy.qzv"),
-    ]
-    if bool(config.get("run_gemelli", True))
-    else []
-)
-
-PERMANOVA_TARGETS = (
-    [
-        os.path.join(OUTDIR, "qiime2", "stats", "adonis.qzv"),
-        os.path.join(OUTDIR, "qiime2", "stats", "beta-group-significance.qzv"),
-    ]
-    if str(config.get("beta_group_column", "")).strip()
-    else []
-)
-
-QURRO_TARGETS = (
-    [os.path.join(OUTDIR, "qiime2", "qurro", "qurro_plot.qzv")]
-    if bool(config.get("run_qurro", True))
-    else []
-)
-
-EXPORT_TARGETS = [
-    os.path.join(OUTDIR, "export", "dna-sequences.fasta"),
-    os.path.join(OUTDIR, "export", "feature-table.tsv"),
-    os.path.join(OUTDIR, "export", "taxonomy.tsv"),
-    os.path.join(OUTDIR, "export", "tree.nwk"),
-]
-
-
 rule all:
     input:
-        QC_TARGETS
-        + PER_REGION_TARGETS
-        + MERGED_TARGETS
-        + PHYLOGENY_TARGETS
-        + DIVERSITY_TARGETS
-        + GEMELLI_TARGETS
-        + PERMANOVA_TARGETS
-        + QURRO_TARGETS
-        + EXPORT_TARGETS
+        # Optional QC (FastQC+MultiQC)
+        (rules.fastqc_multiqc.output if bool(config.get("run_qc", True)) else []),
+
+        # Per-region core artifacts
+        expand(os.path.join(OUTDIR, "qiime2", "regions", "{region}", "demux_trim.qza"), region=REGIONS),
+        expand(os.path.join(OUTDIR, "qiime2", "regions", "{region}", "table.qza"), region=REGIONS),
+        expand(os.path.join(OUTDIR, "qiime2", "regions", "{region}", "repseqs.qza"), region=REGIONS),
+        expand(os.path.join(OUTDIR, "qiime2", "regions", "{region}", "taxonomy.qza"), region=REGIONS),
+        expand(os.path.join(OUTDIR, "qiime2", "regions", "{region}", "taxa-barplot.qzv"), region=REGIONS),
+
+        # Merged artifacts
+        rules.merge_tables.output,
+        rules.merge_repseqs.output,
+        rules.taxonomy_merged_vsearch.output,
+        rules.merged_summaries.output,
+
+        # SEPP + filtering (optional)
+        ([rules.sepp_tree.output, rules.filter_table_by_sepp.output] if bool(config.get("run_sepp", True)) else []),
+
+        # Diversity outputs
+        rules.alpha_rarefaction.output,
+        rules.core_metrics.output,
+
+        # Gemelli outputs (optional)
+        ([rules.gemelli_rpca_unrarefied.output,
+          rules.rarefy_table.output,
+          rules.gemelli_rpca_rarefied.output,
+          rules.gemelli_qc_rarefy.output] if bool(config.get("run_gemelli", True)) else []),
+
+        # PERMANOVA outputs (optional: only if beta_group_column is set)
+        ([rules.permanova_adonis.output,
+          rules.beta_group_significance.output] if str(config.get("beta_group_column", "")).strip() else []),
+
+        # Qurro output (optional)
+        (rules.qurro_plot.output if bool(config.get("run_qurro", True)) else []),
+
+        # Exports for R
+        rules.export_repseqs_fasta.output,
+        rules.export_all.output
