@@ -28,6 +28,7 @@ rule validate_metadata:
 rule qiime_import:
     input:
         fixed=rules.validate_manifest.output.fixed
+        meta_ok=rules.validate_metadata.output
     output:
         os.path.join(OUTDIR, "qiime2", "paired-end-demux.qza")
     conda:
