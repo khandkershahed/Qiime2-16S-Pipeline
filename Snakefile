@@ -68,11 +68,11 @@ def read_manifest_fastqs(manifest_tsv):
 # ----------------------------
 include: "rules/00_utils.smk"
 include: "rules/01_import_qc.smk"
-include: "rules/02_trimming_denoise.smk"
+include: "rules/02_trim_denoise.smk"
 include: "rules/03_classifier_taxonomy.smk"
-include: "rules/04_merge_sepp.smk"
+include: "rules/04_merge_phylogeny.smk"
 include: "rules/05_diversity.smk"
-include: "rules/06_stats_qurro.smk"
+include: "rules/06_gemelli_stats_qurro.smk"
 include: "rules/07_export.smk"
 
 
