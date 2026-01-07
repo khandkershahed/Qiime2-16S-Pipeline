@@ -1,7 +1,9 @@
 name: snakemake
 channels:
   - conda-forge
+  - bioconda     # Recommended for bioinformatics workflows
+  - nodefaults   # Explicitly prevents searching the 'defaults' channel
 dependencies:
   - python=3.11
-  - snakemake-minimal=8.*
+  - snakemake=8.* # Changed from -minimal (see note below)
   - mamba
