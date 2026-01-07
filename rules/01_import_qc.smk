@@ -13,7 +13,7 @@ rule validate_manifest:
 rule validate_metadata:
     input:
         fixed=rules.validate_manifest.output.fixed,
-        meta_ok=rules.validate_metadata.output,
+        # meta_ok=rules.validate_metadata.output,
         meta=metadata_path()
     output:
         touch(os.path.join(OUTDIR, "intermediate", "metadata.validated"))
